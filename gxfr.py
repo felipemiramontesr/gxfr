@@ -248,6 +248,8 @@ def proxify(request):
         del proxies[num]
 
 def list_subs(subs):
+  file = open('subdomains_mx.txt', 'w+')
+ 
   print ' '
   print 'Source\tSubdomain - %d' % (len(subs))
   print '======\t========='
@@ -255,8 +257,13 @@ def list_subs(subs):
   if output: outfile.write(";;SUBDOMAINS: %d\n" % (len(subs)))
   for sub in subs:
     print '%s\t%s.%s' % (sub[0], sub[1], domain)
+   
+    file.write("[S]\t%s\t%s.%s\n" % (sub[0], sub[1], domain))
+    
     if output: outfile.write("[S]\t%s\t%s.%s\n" % (sub[0], sub[1], domain))
   if output: outfile.close()
+  
+  file.close()
 
 def lookup_subs(subs):
   # conduct dns lookup if argument is present
@@ -336,66 +343,71 @@ if len(sys.argv) > 0:
     max_queries = int(sys.argv[sys.argv.index('-q') + 1])
 
 sys.stdin = open('/dev/tty')
-
-file = open('domains_mx.txt','r')
+# Command to open the file (data_mx.txt) which is going to be manipulated.
+file = open('domains_mx.txt', 'r+')
 line = file.readline()
-while line != "":
-  print line 
-  domain = line
-  
-  #domain = ('saizac.com')
-  if output:
-    outfilename = raw_input('Enter Output File Name [%s.gxfr]: ' % domain.split('.')[0])
-    if not outfilename:
-      outfilename = '%s.gxfr' % domain.split('.')[0]
-    # check if file can be created
-    # will fail and die if not
-    try:
-      outfile = open(outfilename, 'w')
-      outfile.close()
-    except IOError:
-      print '[!] Error writing to output file location: %s' % outfilename
-      print '[!] Make sure the location exists, is writeable and try using an absolute path'
-      sys.exit()
-  print '[-] domain:', domain
-  if output: print '[-] output file:', outfilename
-  print '[-] user-agent:', user_agent
-    
-  # execute based on mode
-  gsubs, bsubs = [], []
-  if mode == '--gxfr' or mode == '--both': gsubs = gxfr()
-  if mode == '--bxfr' or mode == '--both': bsubs = bxfr()
-
-  # remove empty subdomains
-  gsubs = [gsub for gsub in gsubs if gsub]
-  bsubs = [bsub for bsub in bsubs if bsub]
-
-  # make 3 separate lists
-  both = list(set(gsubs) & set(bsubs))
-  for sub in both:
-    if sub in gsubs:
-      del gsubs[gsubs.index(sub)]
-    if sub in bsubs:
-      del bsubs[bsubs.index(sub)]
-
-  # build new list of tuples with titles
-  subs = []
-  for item in both:
-    subs.append(('BOTH', item))
-  for item in gsubs:
-    subs.append(('GXFR', item))
-  for item in bsubs:
-    subs.append(('BXFR', item))
-
-  # print output
-  if len(subs) > 0:
-    list_subs(subs)
-    lookup_subs(subs)
-  else:
-    print '\n[!] No subdomains were found'
-
-  print ''
-  line = file.readline()
 file.close()
 
-  # --end--
+sline = str(line)
+#domain = raw_input('Enter Domain Name: ')
+domain = sline
+#domain = "saizac.com"
+
+if output:
+
+  outfilename = raw_input('Enter Output File Name [%s.gxfr]: ' % domain.split('.')[0])
+  
+  if not outfilename:
+    outfilename = '%s.gxfr' % domain.split('.')[0]
+  # check if file can be created
+  # will fail and die if not
+  try:
+    outfile = open(outfilename, 'w')
+    outfile.close()
+  except IOError:
+    print '[!] Error writing to output file location: %s' % outfilename
+    print '[!] Make sure the location exists, is writeable and try using an absolute path'
+    sys.exit()
+print '[-] domain:', domain
+if output: print '[-] output file:', outfilename
+print '[-] user-agent:', user_agent
+  
+# execute based on mode
+gsubs, bsubs = [], []
+if mode == '--gxfr' or mode == '--both': gsubs = gxfr()
+if mode == '--bxfr' or mode == '--both': bsubs = bxfr()
+
+# remove empty subdomains
+gsubs = [gsub for gsub in gsubs if gsub]
+bsubs = [bsub for bsub in bsubs if bsub]
+
+# make 3 separate lists
+both = list(set(gsubs) & set(bsubs))
+for sub in both:
+  if sub in gsubs:
+    del gsubs[gsubs.index(sub)]
+  if sub in bsubs:
+    del bsubs[bsubs.index(sub)]
+
+# build new list of tuples with titles
+subs = []
+for item in both:
+  subs.append(('BOTH', item))
+for item in gsubs:
+  subs.append(('GXFR', item))
+for item in bsubs:
+  subs.append(('BXFR', item))
+
+# print output
+if len(subs) > 0:
+  list_subs(subs)
+  lookup_subs(subs)
+else:
+  print '\n[!] No subdomains were found'
+
+print ''
+
+
+# --end--
+
+

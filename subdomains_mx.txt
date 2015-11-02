@@ -1,0 +1,14 @@
+[S]	GXFR	ojoestadistico.cimat.mx
+[S]	GXFR	www.cimat.mx
+[S]	GXFR	ayuda.cimat.mx
+[S]	GXFR	ommgto.cimat.mx
+[S]	GXFR	eme.cimat.mx
+[S]	GXFR	atd.cimat.mx
+[S]	GXFR	spi2013.eventos.cimat.mx
+[S]	GXFR	opti.cimat.mx
+[S]	GXFR	posgrados.cimat.mx
+[S]	GXFR	spiacademico.eventos.cimat.mx
+[S]	GXFR	35aniversario.cimat.mx
+[S]	GXFR	probayestadistica.cimat.mx
+[S]	GXFR	7vpe.eventos.cimat.mx
+[S]	GXFR	personal.cimat.mx
