@@ -4,21 +4,12 @@
 # By Tim Tomes (LaNMaSteR53)
 # Available for download at http://LaNMaSteR53.com or http://code.google.com/p/gxfr/
 
-print ''
-print '       _/_/_/  _/      _/  _/_/_/_/  _/_/_/   '
-print '    _/          _/  _/    _/        _/    _/  '
-print '   _/  _/_/      _/      _/_/_/    _/_/_/     '
-print '  _/    _/    _/  _/    _/        _/    _/    '
-print '   _/_/_/  _/      _/  _/        _/    _/     '
-print ''
-
+print '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> working!'
 import sys, os.path, urllib, urllib2, re, time, socket, random, socket, json
 
 def help():
   help = """gxfr.py - Tim Tomes (@LaNMaSteR53) (www.lanmaster53.com)
-
   Syntax: python %(0)s domain [mode] [options]
-
   MODES
   =====
   --gxfr [options]         GXFR mode
@@ -346,68 +337,71 @@ sys.stdin = open('/dev/tty')
 # Command to open the file (data_mx.txt) which is going to be manipulated.
 file = open('domains_mx.txt', 'r+')
 line = file.readline()
+
+while True:
+
+  sline = str(line)
+  domain = sline
+
+  if not domain: break
+
+  if output:
+
+    outfilename = raw_input('Enter Output File Name [%s.gxfr]: ' % domain.split('.')[0])
+    
+    if not outfilename:
+      outfilename = '%s.gxfr' % domain.split('.')[0]
+    # check if file can be created
+    # will fail and die if not
+    try:
+      outfile = open(outfilename, 'w')
+      outfile.close()
+    except IOError:
+      print '[!] Error writing to output file location: %s' % outfilename
+      print '[!] Make sure the location exists, is writeable and try using an absolute path'
+      sys.exit()
+  print '[-] domain:', domain
+  if output: print '[-] output file:', outfilename
+  print '[-] user-agent:', user_agent
+    
+  # execute based on mode
+  gsubs, bsubs = [], []
+  if mode == '--gxfr' or mode == '--both': gsubs = gxfr()
+  if mode == '--bxfr' or mode == '--both': bsubs = bxfr()
+
+  # remove empty subdomains
+  gsubs = [gsub for gsub in gsubs if gsub]
+  bsubs = [bsub for bsub in bsubs if bsub]
+
+  # make 3 separate lists
+  both = list(set(gsubs) & set(bsubs))
+  for sub in both:
+    if sub in gsubs:
+      del gsubs[gsubs.index(sub)]
+    if sub in bsubs:
+      del bsubs[bsubs.index(sub)]
+
+  # build new list of tuples with titles
+  subs = []
+  for item in both:
+    subs.append(('BOTH', item))
+  for item in gsubs:
+    subs.append(('GXFR', item))
+  for item in bsubs:
+    subs.append(('BXFR', item))
+
+  # print output
+  if len(subs) > 0:
+    list_subs(subs)
+    lookup_subs(subs)
+  else:
+    print '\n[!] No subdomains were found'
+    list_subs(subs)
+    lookup_subs(subs)
+
+  print ''
+  line = file.readline()
+
 file.close()
 
-sline = str(line)
-#domain = raw_input('Enter Domain Name: ')
-domain = sline
-#domain = "saizac.com"
-
-if output:
-
-  outfilename = raw_input('Enter Output File Name [%s.gxfr]: ' % domain.split('.')[0])
-  
-  if not outfilename:
-    outfilename = '%s.gxfr' % domain.split('.')[0]
-  # check if file can be created
-  # will fail and die if not
-  try:
-    outfile = open(outfilename, 'w')
-    outfile.close()
-  except IOError:
-    print '[!] Error writing to output file location: %s' % outfilename
-    print '[!] Make sure the location exists, is writeable and try using an absolute path'
-    sys.exit()
-print '[-] domain:', domain
-if output: print '[-] output file:', outfilename
-print '[-] user-agent:', user_agent
-  
-# execute based on mode
-gsubs, bsubs = [], []
-if mode == '--gxfr' or mode == '--both': gsubs = gxfr()
-if mode == '--bxfr' or mode == '--both': bsubs = bxfr()
-
-# remove empty subdomains
-gsubs = [gsub for gsub in gsubs if gsub]
-bsubs = [bsub for bsub in bsubs if bsub]
-
-# make 3 separate lists
-both = list(set(gsubs) & set(bsubs))
-for sub in both:
-  if sub in gsubs:
-    del gsubs[gsubs.index(sub)]
-  if sub in bsubs:
-    del bsubs[bsubs.index(sub)]
-
-# build new list of tuples with titles
-subs = []
-for item in both:
-  subs.append(('BOTH', item))
-for item in gsubs:
-  subs.append(('GXFR', item))
-for item in bsubs:
-  subs.append(('BXFR', item))
-
-# print output
-if len(subs) > 0:
-  list_subs(subs)
-  lookup_subs(subs)
-else:
-  print '\n[!] No subdomains were found'
-
-print ''
-
-
 # --end--
-
-
