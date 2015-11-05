@@ -1,3 +1,9 @@
-[S]	GXFR	www.saizac.com
-[S]	GXFR	fitcrew.saizac.com
-[S]	GXFR	twilio.saizac.com
+	GXFR	trailers.apple.com
+	GXFR	www.apple.com
+	GXFR	investor.apple.com
+	GXFR	trailers.apple.com
+	GXFR	www.apple.com
+	GXFR	trailers.apple.com
+	GXFR	www.apple.com
+	GXFR	investor.apple.com
+	GXFR	tw.apple.com

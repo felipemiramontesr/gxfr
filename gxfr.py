@@ -4,7 +4,9 @@
 # By Tim Tomes (LaNMaSteR53)
 # Available for download at http://LaNMaSteR53.com or http://code.google.com/p/gxfr/
 
-print '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> working!'
+print '******************************************* Working!'
+print ''
+
 import sys, os.path, urllib, urllib2, re, time, socket, random, socket, json
 
 def help():
@@ -44,11 +46,11 @@ def help():
   return help
 
 def bxfr():
-  print '[-] Resovling subdomains using the Bing API...'
+  print 'Resovling subdomains using the Bing API...'
   filename = 'api.keys'
   key = ''
   if os.path.exists(filename):
-    print '[-] Extracting Bing API key from \'%s\'.' % filename
+    print 'Extracting Bing API key from \'%s\'.' % filename
     for line in open(filename):
       if 'bing::' in line:
         key = line.split('::')[1].strip()
@@ -113,7 +115,7 @@ def bxfr():
   return subs
 
 def gxfr():
-  print '[-] Resovling subdomains using Google...'
+  print 'Resovling subdomains using Google...'
   query_cnt = 0
   base_url = 'https://www.google.com'
   base_uri = '/m/search?'
@@ -142,11 +144,11 @@ def gxfr():
       # note: query character limit is passive in mobile, but seems to be ~794
       # note: query character limit seems to be 852 for desktop queries
       # note: typical URI max length is 2048 (starts after top level domain)
-      if verbose: print '[+] using query: %s...' % (full_url)
+      if verbose: print 'using query: %s...' % (full_url)
       # build web request and submit query
       request = urllib2.Request(full_url)
       # spoof user-agent string
-      request.add_header('User-Agent', user_agent)
+      request.add_header('user-Agent', user_agent)
       if not verbose: sys.stdout.write('.'); sys.stdout.flush()
       # if proxy is enabled, use the correct handler
       if proxy:
@@ -154,7 +156,7 @@ def gxfr():
       else:
         msg, result = sendify(request)
       if not result:
-        if str(msg).find('503') != -1: print '[!] possible shun: use --proxy or find something else to do for 24 hours :)'
+        if str(msg).find('503') != -1: print 'possible shun: use --proxy or find something else to do for 24 hours :)'
         break
       #if not verbose: sys.stdout.write('\n'); sys.stdout.flush()
       # iterate query count
@@ -166,33 +168,33 @@ def gxfr():
       # add subdomain to list if not already exists
       for site in sites:
         if site not in subs:
-          if verbose: print '[!] subdomain found:', site
+          if verbose: print 'subdomain found:', site
           subs.append(site)
           new = True
       # exit if maximum number of queries has been made
       if query_cnt == max_queries:
-        print '[-] maximum number of queries made...'
+        print 'maximum number of queries made...'
         break
       # start going through all pages if querysize is maxed out
       if new == False:
         # exit if all subdomains have been found
-        if not 'Next page' in result:
+        if not 'next page' in result:
           # curl to stdin breaks pdb
-          print '[-] all available subdomains found...'
+          print 'all available subdomains found...'
           break
         else:
           page += 1
           new = True
-          if verbose: print '[+] no new subdomains found on page. jumping to result %d.' % (page*10)
+          if verbose: print 'no new subdomains found on page. jumping to result %d.' % (page*10)
       # sleep script to avoid lock-out
-      if verbose: print '[+] sleeping to avoid lock-out...'
+      if verbose: print 'sleeping to avoid lock-out...'
       time.sleep(secs)
     except KeyboardInterrupt:
       # catch keyboard interrupt and gracefull complete script
       break
   # print list of subdomains
-  print '[-] successful queries made:', str(query_cnt)
-  if verbose: print '[+] final query string: %s' % (full_url)
+  print 'successful queries made:', str(query_cnt)
+  if verbose: print 'final query string: %s' % (full_url)
   return subs
 
 def sendify(request):
@@ -216,7 +218,7 @@ def proxify(request):
     num = random.randint(0,len(proxies)-1)
     host = proxies[num]
     opener = urllib2.build_opener(urllib2.ProxyHandler({'https': host}))
-    if verbose: print '[+] sending query to', host
+    if verbose: print 'sending query to', host
     # send query to proxy server
     try:
       result = opener.open(request)
@@ -239,7 +241,7 @@ def proxify(request):
         del proxies[num]
 
 def list_subs(subs):
-  file = open('subdomains_mx.txt', 'w+')
+  file = open('subdomains_mx.txt', 'a')
  
   print ' '
   print 'Source\tSubdomain - %d' % (len(subs))
@@ -249,7 +251,7 @@ def list_subs(subs):
   for sub in subs:
     print '%s\t%s.%s' % (sub[0], sub[1], domain)
    
-    file.write("[S]\t%s\t%s.%s\n" % (sub[0], sub[1], domain))
+    file.write("\t%s\t%s.%s\n" % (sub[0], sub[1], domain))
     
     if output: outfile.write("[S]\t%s\t%s.%s\n" % (sub[0], sub[1], domain))
   if output: outfile.close()
@@ -260,7 +262,7 @@ def lookup_subs(subs):
   # conduct dns lookup if argument is present
   if lookup == True:
     print ' '
-    print '[-] querying dns, please wait...'
+    print 'querying dns, please wait...'
     dict = {}
     print ' '
     print 'Source\tIP Address\tSubdomain'
@@ -340,9 +342,7 @@ line = file.readline()
 
 while True:
 
-  sline = str(line)
-  domain = sline
-
+  domain = str(line)
   if not domain: break
 
   if output:
@@ -360,9 +360,9 @@ while True:
       print '[!] Error writing to output file location: %s' % outfilename
       print '[!] Make sure the location exists, is writeable and try using an absolute path'
       sys.exit()
-  print '[-] domain:', domain
-  if output: print '[-] output file:', outfilename
-  print '[-] user-agent:', user_agent
+  print 'domain:', domain
+  if output: print 'output file:', outfilename
+  print 'user-agent:', user_agent
     
   # execute based on mode
   gsubs, bsubs = [], []
@@ -396,8 +396,6 @@ while True:
     lookup_subs(subs)
   else:
     print '\n[!] No subdomains were found'
-    list_subs(subs)
-    lookup_subs(subs)
 
   print ''
   line = file.readline()
