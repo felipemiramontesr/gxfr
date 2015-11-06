@@ -1,9 +1,3 @@
 	GXFR	trailers.apple.com
 	GXFR	www.apple.com
-	GXFR	investor.apple.com
-	GXFR	trailers.apple.com
-	GXFR	www.apple.com
-	GXFR	trailers.apple.com
-	GXFR	www.apple.com
-	GXFR	investor.apple.com
 	GXFR	tw.apple.com
